@@ -8,9 +8,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CodeBlock, CodeBlockCopyButton } from "@/components/ui/code-block";
 import { ThemeProvider } from "./components/theme-provider";
+import { ExampleComponent } from "./components/example-component";
 
 function App() {
   const [location, setLocation] = useState("London");
@@ -37,21 +36,28 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <div className="min-h-screen p-8 font-sans">
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
-          {/* Controls */}
-          <div className="space-y-8 col-span-2">
-            <div>
-              <h1 className="text-4xl font-heading mb-2">Slop Machine</h1>
-              <h2 className="font-subheading">"Just-in-Time" Assets Demo</h2>
-            </div>
-          </div>
-
-          <Card className="bg-accent">
-            <CardHeader>
-              <CardTitle>Context Variables</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+      <div className="min-h-screen p-8 font-sans max-w-4xl mx-auto space-y-4">
+        <h1 className="text-4xl font-heading">Slop Machine</h1>
+        <h2 className="font-subheading">Basic Example</h2>
+        <p className="text-foreground/50">
+          Image with variables provided at runtime.
+        </p>
+        <ExampleComponent
+          code={codeString}
+          output={
+            <SlopImage
+              prompt={prompt}
+              variables={{
+                location,
+                weather,
+                style,
+                date,
+              }}
+              className="w-full h-full object-cover transition-opacity duration-500 aspect-square"
+            />
+          }
+          controls={
+            <>
               <div className="space-y-2">
                 <Label>Location</Label>
                 <Select value={location} onValueChange={setLocation}>
@@ -102,27 +108,9 @@ function App() {
                 <Label>Date</Label>
                 <p className="bg-background p-2 rounded-sm">{date}</p>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Output */}
-          <SlopImage
-            prompt={prompt}
-            variables={{
-              location,
-              weather,
-              style,
-              date,
-            }}
-            className="w-full h-full object-cover transition-opacity duration-500 aspect-square rounded-sm"
-          />
-
-          <div className="overflow-hidden rounded-sm col-span-2 border-2 shadow-retro-lg border-neutral-800 bg-neutral-950">
-            <CodeBlock code={codeString} language="tsx" showLineNumbers wrap>
-              <CodeBlockCopyButton />
-            </CodeBlock>
-          </div>
-        </div>
+            </>
+          }
+        />
       </div>
     </ThemeProvider>
   );

@@ -102,21 +102,21 @@ export const CodeBlock = ({
     <CodeBlockContext.Provider value={{ code }}>
       <div
         className={cn(
-          "group relative w-full overflow-hidden rounded-md border bg-background text-foreground",
+          "group relative w-full overflow-hidden rounded-md border bg-background dark:bg-neutral-950 text-foreground",
           className,
         )}
         {...props}>
         <div className="relative">
           <div
             className={cn(
-              "overflow-auto dark:hidden [&>pre]:m-0 [&>pre]:bg-background! [&>pre]:p-4 [&>pre]:text-foreground! [&>pre]:text-sm [&_code]:font-mono [&_code]:text-sm",
+              "overflow-auto dark:hidden [&>pre]:m-0 [&>pre]:bg-background dark:[&>pre]:bg-neutral-950! [&>pre]:p-4 [&>pre]:text-foreground! [&>pre]:text-sm [&_code]:font-mono [&_code]:text-sm",
               wrap && "[&>pre]:whitespace-pre-wrap [&>pre]:wrap-break-word",
             )}
             dangerouslySetInnerHTML={{ __html: html }}
           />
           <div
             className={cn(
-              "hidden overflow-auto dark:block [&>pre]:m-0 [&>pre]:bg-background! [&>pre]:p-4 [&>pre]:text-foreground! [&>pre]:text-sm [&_code]:font-mono [&_code]:text-sm",
+              "hidden overflow-auto dark:block [&>pre]:m-0 [&>pre]:bg-background dark:[&>pre]:bg-neutral-950! [&>pre]:p-4 [&>pre]:text-foreground! [&>pre]:text-sm [&_code]:font-mono [&_code]:text-sm",
               wrap && "[&>pre]:whitespace-pre-wrap [&>pre]:wrap-break-word",
             )}
             dangerouslySetInnerHTML={{ __html: darkHtml }}
