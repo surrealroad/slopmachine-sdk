@@ -11,10 +11,5 @@ export default defineConfig({
     fs: {
       allow: ['..']
     }
-  },
-  resolve: {
-    alias: {
-      '@slopmachine/react': path.resolve(__dirname, 'src/index.ts')
-    }
   }
 })
