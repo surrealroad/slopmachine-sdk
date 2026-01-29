@@ -35,13 +35,7 @@ jobs:
         run: npm ci
 
       - name: Build Demo
-        run: npm run dev -- --mode production --build
-        # Wait, dev is 'vite'. We need a build script. 
-        # I should add "build:demo": "vite build" to package.json
-
-      - name: Build Demo (Manual)
-        run: npx vite build --base=/slopmachine-sdk/
-        working-directory: .
+        run: npm run build:demo
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
