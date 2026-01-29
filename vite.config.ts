@@ -6,10 +6,7 @@ export default defineConfig({
   root: 'demo',
   base: '/slopmachine-sdk/',
   plugins: [react()],
-  server: {
-    port: 3001,
-    fs: {
-      allow: ['..']
-    }
+  resolve: {
+    dedupe: ['react', 'react-dom']
   }
 })
