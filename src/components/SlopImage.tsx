@@ -7,45 +7,76 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-interface SlopImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
-  prompt: string;
-  aspectRatio?: string;
-  variables?: Record<string, string | number | undefined | null>;
-}
+// Two modes: Direct Prompt OR Silo Reference
+type SlopImageProps = React.ImgHTMLAttributes<HTMLImageElement> &
+  (
+    | {
+        mode?: "prompt";
+        prompt: string;
+        silo?: never;
+        bucket?: never;
+        version?: never;
+        aspectRatio?: string;
+        variables?: Record<string, string | number | undefined | null>;
+      }
+    | {
+        mode?: "silo";
+        prompt?: never;
+        silo: string;
+        bucket: string;
+        version?: number;
+        aspectRatio?: string;
+        variables?: Record<string, string | number | undefined | null>;
+      }
+  );
 
 export const SlopImage: React.FC<SlopImageProps> = ({
-  prompt,
   className,
   aspectRatio = "1:1",
   variables = {},
   ...props
 }) => {
-  // Interpolate prompt
-  const finalPrompt = useMemo(() => {
-    let text = prompt;
-
-    Object.keys(variables).forEach((key) => {
-      const value = variables[key];
-      // Replace {key} with value
-      if (value !== undefined && value !== null) {
-        text = text.replace(new RegExp(`{${key}}`, "g"), String(value));
-      }
-    });
-    return text;
-  }, [prompt, variables]);
-
-  // Construct API URL
   const baseUrl =
     "https://us-central1-slopmachine-12bfb.cloudfunctions.net/renderImage";
-  const params = new URLSearchParams({
-    prompt: finalPrompt,
-    aspectRatio: String(aspectRatio),
-  });
 
-  const src = `${baseUrl}?${params.toString()}`;
+  // Construct URL based on mode
+  const src = useMemo(() => {
+    const params = new URLSearchParams();
+    params.append("aspectRatio", String(aspectRatio));
+
+    if (props.silo && props.bucket) {
+      // Mode: Silo Reference
+      params.append("silo", props.silo);
+      params.append("bucket", props.bucket);
+      if (props.version) {
+        params.append("version", String(props.version));
+      }
+
+      // Pass variables as query params for server-side interpolation
+      Object.keys(variables).forEach((key) => {
+        const value = variables[key];
+        if (value !== undefined && value !== null) {
+          params.append(key, String(value));
+        }
+      });
+    } else if (props.prompt) {
+      // Mode: Direct Prompt
+      let text = props.prompt;
+      // Client-side interpolation
+      Object.keys(variables).forEach((key) => {
+        const value = variables[key];
+        if (value !== undefined && value !== null) {
+          text = text.replace(new RegExp(`{${key}}`, "g"), String(value));
+        }
+      });
+      params.append("prompt", text);
+    }
+
+    return `${baseUrl}?${params.toString()}`;
+  }, [props.silo, props.bucket, props.version, props.prompt, aspectRatio, variables]);
 
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Reset loading state when src changes
   useEffect(() => {
     setIsLoading(true);
@@ -102,7 +133,8 @@ export const SlopImage: React.FC<SlopImageProps> = ({
       <img
         key={src}
         src={src}
-        alt={finalPrompt}
+        // Use prompt or bucket ID as alt text fallback
+        alt={props.prompt || `Slop generated from ${props.silo}/${props.bucket}`}
         onLoad={() => setIsLoading(false)}
         className={cn(
           "h-full w-full object-cover transition-opacity duration-500",
