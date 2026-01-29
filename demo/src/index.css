@@ -1,0 +1,429 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-rubik-dirt);
+  --font-subheading: var(--font-special-elite);
+  --font-card-title: var(--font-annie-use-your-telescope);
+  --font-moirai: var(--font-moirai);
+  --font-rubik-bubbles: var(--font-rubik-bubbles);
+  --font-rubik-wet-paint: var(--font-rubik-wet-paint);
+  --font-rubik-dirt: var(--font-rubik-dirt);
+  --font-rubik-puddles: var(--font-rubik-puddles);
+  --font-rubik-vinyl: var(--font-rubik-vinyl);
+  --font-annie-use-your-telescope: var(--font-annie-use-your-telescope);
+  --font-gamja-flower: var(--font-gamja-flower);
+  --font-kirang-haerang: var(--font-kirang-haerang);
+  --font-delius-swash-caps: var(--font-delius-swash-caps);
+  --font-im-fell-great-primer: var(--font-im-fell-great-primer);
+  --font-special-elite: var(--font-special-elite);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --animate-gradient: gradient 8s linear infinite;
+
+  @keyframes gradient {
+    from {
+      background-position: var(--bg-size, 300%) 0;
+    }
+  }
+}
+
+:root {
+  /* Border radius - keeping minimal for neubrutalism */
+  --radius: 0.5rem;
+
+  /* Core neubrutalist properties */
+  --shadow-offset: 6px;
+  --shadow-color: oklch(0 0 0); /* Pure black for shadows */
+  --border-width: 3px;
+  --border-color: oklch(0 0 0);
+
+  /* Light mode - bold, vibrant backgrounds */
+  --background: oklch(0.98 0.05 85); /* Warm off-white with slight yellow */
+  --foreground: oklch(0.15 0 0);
+
+  /* Cards  */
+  --card: oklch(0.98 0.05 85); /* Warm off-white with slight yellow */
+  --card-foreground: oklch(0.15 0 0);
+
+  /* Popovers - bright yellow */
+  --popover: oklch(0.95 0.15 95);
+  --popover-foreground: oklch(0.15 0 0);
+
+  /* Primary - rose-400 as brand color */
+  --primary: oklch(0.712 0.194 13.428);
+  --primary-foreground: oklch(0 0 0);
+
+  /* Secondary - vibrant purple for distinction */
+  --secondary: oklch(0.75 0.18 305);
+  --secondary-foreground: oklch(0 0 0);
+
+  /* Muted - soft pink for subtle elements */
+  --muted: oklch(0.88 0.08 15);
+  --muted-foreground: oklch(0.7 0 0);
+
+  /* Accent - electric blue for emphasis */
+  --accent: oklch(0.85 0.12 210);
+  --accent-foreground: oklch(0.15 0 0);
+
+  /* Destructive - bold red */
+  --destructive: oklch(0.6 0.27 25);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  /* Borders and inputs - pure black for neubrutalism */
+  --border: oklch(0 0 0);
+  --input: oklch(0 0 0);
+  --ring: oklch(0.75 0.15 195);
+
+  /* Chart colors - vibrant and distinct */
+  --chart-1: oklch(0.65 0.24 25);
+  --chart-2: oklch(0.72 0.2 145);
+  --chart-3: oklch(0.68 0.22 275);
+  --chart-4: oklch(0.78 0.18 115);
+  --chart-5: oklch(0.7 0.19 55);
+
+  /* Sidebar - bright green background */
+  --sidebar: oklch(0.82 0.15 145);
+  --sidebar-foreground: oklch(0.15 0 0);
+  --sidebar-primary: oklch(0.712 0.194 13.428);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.75 0.18 165);
+  --sidebar-accent-foreground: oklch(0.15 0 0);
+  --sidebar-border: oklch(0 0 0);
+  --sidebar-ring: oklch(0.712 0.194 13.428);
+  --vibration-shadow-color: white;
+}
+
+.dark {
+  /* Dark mode - background lighter than shadows for visibility */
+  --background: oklch(0.22 0.04 280); /* Dark blue-purple, lighter than black */
+  --foreground: oklch(0.98 0 0);
+
+  /* Cards - deep purple with subtle gradient feel */
+  --card: oklch(0.3 0.08 290);
+  --card-foreground: oklch(0.98 0 0);
+
+  /* Popovers - deep teal */
+  --popover: oklch(0.4 0.15 95);
+  --popover-foreground: oklch(0.98 0 0);
+
+  /* Primary - keeping rose-400 for brand consistency */
+  --primary: oklch(0.712 0.194 13.428);
+  --primary-foreground: oklch(0.15 0 0);
+
+  /* Secondary - dark purple for contrast */
+  --secondary: oklch(0.35 0.18 305);
+  --secondary-foreground: oklch(0.98 0 0);
+
+  /* Muted - deep burgundy */
+  --muted: oklch(0.35 0.08 15);
+  --muted-foreground: oklch(0.7 0 0);
+
+  /* Accent - dark blue for pop */
+  --accent: oklch(0.35 0.12 210);
+  --accent-foreground: oklch(0.98 0 0);
+
+  /* Destructive - bright red-orange */
+  --destructive: oklch(0.65 0.25 30);
+  --destructive-foreground: oklch(0.15 0 0);
+
+  /* Borders stay pure black - shadows same as light mode */
+  --border: oklch(0 0 0);
+  --input: oklch(0 0 0);
+  --ring: oklch(0.75 0.15 195);
+
+  /* Chart colors - vibrant and high contrast */
+  --chart-1: oklch(0.7 0.22 40);
+  --chart-2: oklch(0.75 0.18 170);
+  --chart-3: oklch(0.72 0.2 290);
+  --chart-4: oklch(0.8 0.17 130);
+  --chart-5: oklch(0.75 0.19 60);
+
+  /* Sidebar - deep emerald */
+  --sidebar: oklch(0.32 0.09 160);
+  --sidebar-foreground: oklch(0.98 0 0);
+  --sidebar-primary: oklch(0.712 0.194 13.428);
+  --sidebar-primary-foreground: oklch(0.15 0 0);
+  --sidebar-accent: oklch(0.4 0.1 175);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0 0 0);
+  --sidebar-ring: oklch(0.712 0.194 13.428);
+  --vibration-shadow-color: black;
+}
+
+/* Neubrutalist shadow utilities */
+* {
+  /* Apply hard shadows to interactive elements */
+  --shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--shadow-color);
+  --shadow-sm: 4px 4px 0 var(--shadow-color);
+  --shadow-lg: 8px 8px 0 var(--shadow-color);
+  --shadow-xl: 12px 12px 0 var(--shadow-color);
+}
+
+/* Buttons, inputs, and clickable affordances get shadows + thick borders */
+/* button,
+input,
+select,
+textarea,
+[role="button"],
+a.button {
+  border: var(--border-width) solid var(--border-color);
+  box-shadow: var(--shadow);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+button:hover,
+input:hover,
+select:hover,
+textarea:hover,
+[role="button"]:hover,
+a.button:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 0 var(--shadow-color);
+}
+
+button:active,
+[role="button"]:active,
+a.button:active {
+  transform: translate(var(--shadow-offset), var(--shadow-offset));
+  box-shadow: 0 0 0 var(--shadow-color);
+} */
+
+/* Non-clickable decorative elements (cards, badges) */
+/* .card,
+.badge,
+[role="status"],
+.decorative {
+  border: 2px solid var(--border-color);
+} */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  .font-heading {
+    @apply uppercase;
+  }
+}
+
+/* Tiptap placeholder styles */
+.tiptap p.is-editor-empty:first-child::before {
+  color: oklch(0.7 0 0);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+@keyframes vibrate {
+  0%,
+  100% {
+    transform: translateX(0) scale(var(--vibration-scale, 1));
+  }
+  25% {
+    transform: translateX(calc(-1 * var(--vibration-intensity, 2px)))
+      scale(var(--vibration-scale, 1));
+  }
+  50% {
+    transform: translateX(var(--vibration-intensity, 2px))
+      scale(var(--vibration-scale, 1));
+  }
+  75% {
+    transform: translateX(calc(-1 * var(--vibration-intensity, 2px)))
+      scale(var(--vibration-scale, 1));
+  }
+}
+
+.animate-vibrate {
+  animation: vibrate var(--vibration-duration, 0.3s) linear infinite;
+}
+
+@utility shadow-retro-lg {
+  --tw-shadow: 6px 6px 0 0 #000;
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000),
+    /* offset ring, if any */ var(--tw-ring-shadow, 0 0 #0000),
+    /* actual ring, if any */ var(--tw-shadow); /* your retro shadow */
+}
+@utility shadow-retro-md {
+  --tw-shadow: 4px 4px 0px #000;
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000),
+    /* offset ring, if any */ var(--tw-ring-shadow, 0 0 #0000),
+    /* actual ring, if any */ var(--tw-shadow); /* your retro shadow */
+}
+@utility shadow-retro-sm {
+  --tw-shadow: 2px 2px 0px #000;
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000),
+    /* offset ring, if any */ var(--tw-ring-shadow, 0 0 #0000),
+    /* actual ring, if any */ var(--tw-shadow); /* your retro shadow */
+}
+
+@keyframes typing {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+}
+
+@keyframes loading-dots {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.6);
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes text-blink {
+  0%,
+  100% {
+    color: var(--primary);
+  }
+  50% {
+    color: var(--muted-foreground);
+  }
+}
+
+@keyframes bounce-dots {
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes thin-pulse {
+  0%,
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.4;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer-text {
+  0% {
+    background-position: 150% center;
+  }
+  100% {
+    background-position: -150% center;
+  }
+}
+
+@keyframes wave-bars {
+  0%,
+  100% {
+    transform: scaleY(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleY(0.6);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 50%;
+  }
+  100% {
+    background-position: -200% 50%;
+  }
+}
+
+@keyframes spinner-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
