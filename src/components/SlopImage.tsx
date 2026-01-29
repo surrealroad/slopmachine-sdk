@@ -29,6 +29,7 @@ export const SlopImage: React.FC<SlopImageProps> = ({
   prompt,
   className,
   aspectRatio = "1:1",
+  style,
   ...props
 }) => {
   // Interpolate prompt
@@ -44,7 +45,7 @@ export const SlopImage: React.FC<SlopImageProps> = ({
     });
 
     return { finalPrompt: text };
-  }, [prompt, props]);
+  }, [prompt, props, style]);
 
   // Construct API URL
   const baseUrl =
@@ -56,8 +57,8 @@ export const SlopImage: React.FC<SlopImageProps> = ({
 
   // If style wasn't in the prompt template but passed as a prop, maybe append it?
   // The API supports a 'style' param.
-  if (props.style && !prompt.includes("{style}")) {
-    params.append("style", String(props.style));
+  if (style && !prompt.includes("{style}")) {
+    params.append("style", String(style));
   }
 
   const src = `${baseUrl}?${params.toString()}`;
