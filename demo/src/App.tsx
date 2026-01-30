@@ -34,13 +34,10 @@ function App() {
   }}
 />`;
 
-  // Example Silo IDs (Mock)
-  const siloCodeString = `<SlopImage
-  recipe={{
-    silo: "public_demo",
-    bucket: "weather_scene",
-    version: 1
-  }}
+  // Example Bucket ID (Mock)
+  const bucketCodeString = `<SlopImage
+  bucket="weather_scene" 
+  // version is optional (defaults to current)
   variables={{
     location: "${location}",
     weather: "${weather}"
@@ -59,7 +56,7 @@ function App() {
           <Tabs defaultValue="direct" onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-8">
               <TabsTrigger value="direct">Direct Prompt Mode</TabsTrigger>
-              <TabsTrigger value="silo">Silo (Managed) Mode</TabsTrigger>
+              <TabsTrigger value="bucket">Bucket (Managed) Mode</TabsTrigger>
             </TabsList>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
@@ -139,7 +136,7 @@ function App() {
                     className="w-full h-full object-cover rounded-sm shadow-md"
                   />
                 </TabsContent>
-                <TabsContent value="silo" className="mt-0 h-full">
+                <TabsContent value="bucket" className="mt-0 h-full">
                   <div className="relative w-full h-full group">
                     {/* 
                         DEMO TRICK: We are using the 'prompt' mode here to ensure the demo 
@@ -147,7 +144,7 @@ function App() {
                         silo/bucket IDs. 
                         
                         In a real app, you would use:
-                        <SlopImage recipe={{ silo: "public_demo", bucket: "weather_scene" }} ... />
+                        <SlopImage bucket="weather_scene" ... />
                      */}
                     <SlopImage
                       prompt={prompt}
@@ -161,7 +158,7 @@ function App() {
                     />
                      {/* Overlay to explain what's happening */}
                      <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                        Simulating: public_demo / weather_scene
+                        Simulating: bucket="weather_scene"
                      </div>
                   </div>
                 </TabsContent>
@@ -174,8 +171,8 @@ function App() {
                     <CodeBlockCopyButton />
                   </CodeBlock>
                 </TabsContent>
-                <TabsContent value="silo" className="mt-0">
-                  <CodeBlock code={siloCodeString} language="tsx" showLineNumbers wrap>
+                <TabsContent value="bucket" className="mt-0">
+                  <CodeBlock code={bucketCodeString} language="tsx" showLineNumbers wrap>
                     <CodeBlockCopyButton />
                   </CodeBlock>
                 </TabsContent>

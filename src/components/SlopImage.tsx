@@ -9,7 +9,7 @@ function cn(...inputs: ClassValue[]) {
 
 // Two modes: Direct Prompt OR Silo Reference
 export type SlopImageRecipe = {
-  silo: string;
+  silo?: string;
   bucket: string;
   version?: number;
 };
@@ -20,13 +20,29 @@ type SlopImageProps = React.ImgHTMLAttributes<HTMLImageElement> &
         mode?: "prompt";
         prompt: string;
         recipe?: never;
+        bucket?: never;
+        silo?: never;
+        version?: never;
         aspectRatio?: string;
         variables?: Record<string, string | number | undefined | null>;
       }
     | {
-        mode?: "silo";
+        mode?: "recipe";
         prompt?: never;
         recipe: SlopImageRecipe;
+        bucket?: never;
+        silo?: never;
+        version?: never;
+        aspectRatio?: string;
+        variables?: Record<string, string | number | undefined | null>;
+      }
+    | {
+        mode?: "bucket";
+        prompt?: never;
+        recipe?: never;
+        bucket: string;
+        silo?: string;
+        version?: number;
         aspectRatio?: string;
         variables?: Record<string, string | number | undefined | null>;
       }
@@ -47,21 +63,16 @@ export const SlopImage: React.FC<SlopImageProps> = ({
     params.append("aspectRatio", String(aspectRatio));
 
     if (props.recipe) {
-      // Mode: Silo Reference
+      // Mode: Recipe Object
       const { silo, bucket, version } = props.recipe;
-      params.append("silo", silo);
+      if (silo) params.append("silo", silo);
       params.append("bucket", bucket);
-      if (version) {
-        params.append("version", String(version));
-      }
-
-      // Pass variables as query params for server-side interpolation
-      Object.keys(variables).forEach((key) => {
-        const value = variables[key];
-        if (value !== undefined && value !== null) {
-          params.append(key, String(value));
-        }
-      });
+      if (version) params.append("version", String(version));
+    } else if (props.bucket) {
+      // Mode: Direct Props (Shorthand)
+      if (props.silo) params.append("silo", props.silo);
+      params.append("bucket", props.bucket);
+      if (props.version) params.append("version", String(props.version));
     } else if (props.prompt) {
       // Mode: Direct Prompt
       let text = props.prompt;
@@ -75,8 +86,19 @@ export const SlopImage: React.FC<SlopImageProps> = ({
       params.append("prompt", text);
     }
 
+    // Pass variables as query params for server-side interpolation (for all modes)
+    Object.keys(variables).forEach((key) => {
+      const value = variables[key];
+      if (value !== undefined && value !== null) {
+        // Avoid overwriting params we've already set
+        if (!params.has(key)) {
+          params.append(key, String(value));
+        }
+      }
+    });
+
     return `${baseUrl}?${params.toString()}`;
-  }, [props.recipe, props.prompt, aspectRatio, variables]);
+  }, [props.recipe, props.bucket, props.silo, props.version, props.prompt, aspectRatio, variables]);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -84,6 +106,14 @@ export const SlopImage: React.FC<SlopImageProps> = ({
   useEffect(() => {
     setIsLoading(true);
   }, [src]);
+
+  // Helper for alt text
+  const altText = useMemo(() => {
+    if (props.prompt) return props.prompt;
+    if (props.recipe) return `Slop from ${props.recipe.silo ? props.recipe.silo + '/' : ''}${props.recipe.bucket}`;
+    if (props.bucket) return `Slop from ${props.silo ? props.silo + '/' : ''}${props.bucket}`;
+    return "Slop Image";
+  }, [props.prompt, props.recipe, props.bucket, props.silo]);
 
   return (
     <div
@@ -136,11 +166,7 @@ export const SlopImage: React.FC<SlopImageProps> = ({
       <img
         key={src}
         src={src}
-        // Use prompt or bucket ID as alt text fallback
-        alt={
-          props.prompt ||
-          `Slop generated from ${props.recipe?.silo}/${props.recipe?.bucket}`
-        }
+        alt={altText}
         onLoad={() => setIsLoading(false)}
         onError={() => setIsLoading(false)}
         className={cn(
