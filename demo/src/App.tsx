@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SlopImage } from "../../src/index";
 import {
   Select,
@@ -12,10 +12,68 @@ import { ThemeProvider } from "./components/theme-provider";
 import { ExampleComponent } from "./components/example-component";
 
 function App() {
-  const [location, setLocation] = useState("London");
-  const [weather, setWeather] = useState("Rainy");
+  const [location, setLocation] = useState("Auto");
+  const [weather, setWeather] = useState("Auto");
   const [style, setStyle] = useState("Oil Painting");
   const [date, setDate] = useState(new Date().toLocaleDateString());
+
+  const [detectedLocation, setDetectedLocation] = useState("");
+  const [detectedWeather, setDetectedWeather] = useState("");
+  const [locationAutoDisabled, setLocationAutoDisabled] = useState(false);
+  const [weatherAutoDisabled, setWeatherAutoDisabled] = useState(false);
+
+  useEffect(() => {
+    if (location === "Auto") {
+      setDetectedLocation("Detecting...");
+      fetch("https://ipapi.co/country_name/")
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch location");
+          return res.text();
+        })
+        .then((data) => setDetectedLocation(data.trim()))
+        .catch(() => {
+          setDetectedLocation("Unknown Location");
+          setLocation("London");
+          setLocationAutoDisabled(true);
+        });
+    }
+  }, [location]);
+
+  const effectiveLocation = location === "Auto" ? detectedLocation : location;
+
+  useEffect(() => {
+    if (weather === "Auto") {
+      if (effectiveLocation === "Detecting..." || !effectiveLocation) {
+        setDetectedWeather("Waiting for location...");
+        return;
+      }
+      setDetectedWeather("Detecting...");
+      fetch(
+        `https://wttr.in/${encodeURIComponent(effectiveLocation)}?format=%C`,
+      )
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch weather");
+          return res.text();
+        })
+        .then((data) => setDetectedWeather(data.trim()))
+        .catch(() => {
+          setDetectedWeather("Unknown Weather");
+          setWeather("Rainy");
+          setWeatherAutoDisabled(true);
+        });
+    }
+  }, [weather, effectiveLocation]);
+
+  const effectiveWeather = weather === "Auto" ? detectedWeather : weather;
+
+  const codeLocation =
+    location === "Auto"
+      ? `getLocation() // ${detectedLocation}`
+      : `"${effectiveLocation}"`;
+  const codeWeather =
+    weather === "Auto"
+      ? `getWeather(getLocation()) // ${detectedWeather}`
+      : `"${effectiveWeather}"`;
 
   const basicExamplePrompt = `A beautiful scene in {location}, where the weather is {weather}, there are flying pigs in the background somewhere, and there is the text 'Slop Machine was here {date}', all in the style of {style}`;
 
@@ -34,8 +92,8 @@ function App() {
             code={`<SlopImage
   prompt="${basicExamplePrompt}"
   variables={{
-    location: "${location}",
-    weather: "${weather}",
+    location: ${codeLocation},
+    weather: ${codeWeather},
     style: "${style}",
     date: new Date().toLocaleDateString()
   }}
@@ -44,8 +102,8 @@ function App() {
               <SlopImage
                 prompt={basicExamplePrompt}
                 variables={{
-                  location,
-                  weather,
+                  location: effectiveLocation,
+                  weather: effectiveWeather,
                   style,
                   date,
                 }}
@@ -61,6 +119,9 @@ function App() {
                       <SelectValue placeholder="Select location" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="Auto" disabled={locationAutoDisabled}>
+                        Auto
+                      </SelectItem>
                       <SelectItem value="London">London</SelectItem>
                       <SelectItem value="Tokyo">Tokyo</SelectItem>
                       <SelectItem value="New York">New York</SelectItem>
@@ -76,6 +137,9 @@ function App() {
                       <SelectValue placeholder="Select weather" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="Auto" disabled={weatherAutoDisabled}>
+                        Auto
+                      </SelectItem>
                       <SelectItem value="Rainy">Rainy</SelectItem>
                       <SelectItem value="Sunny">Sunny</SelectItem>
                       <SelectItem value="Snowing">Snowing</SelectItem>
