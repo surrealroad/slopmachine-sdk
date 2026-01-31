@@ -79,6 +79,16 @@ function App() {
 
   const managedExamplePrompt = `A chaotic, hellish scene of flames engulfing a a labyrinth of glass-walled skyscrapers and digital billboards, with explosions and smoke filling the air, with a sense of intense heat and disarray. The image should be smooth shaded colors, that establishes mood and lighting, but only hints at specific details.`;
 
+  const isLocationLoading =
+    location === "Auto" &&
+    (detectedLocation === "Detecting..." || !detectedLocation);
+  const isWeatherLoading =
+    weather === "Auto" &&
+    (detectedWeather === "Detecting..." ||
+      detectedWeather === "Waiting for location..." ||
+      !detectedWeather);
+  const isLoading = isLocationLoading || isWeatherLoading;
+
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       <div className="min-h-screen p-8 font-sans max-w-4xl mx-auto space-y-12">
@@ -99,16 +109,24 @@ function App() {
   }}
 />`}
             output={
-              <SlopImage
-                prompt={basicExamplePrompt}
-                variables={{
-                  location: effectiveLocation,
-                  weather: effectiveWeather,
-                  style,
-                  date,
-                }}
-                className="w-full h-full object-cover transition-opacity duration-500 aspect-square"
-              />
+              isLoading ? (
+                <div className="w-full h-full flex items-center justify-center bg-muted aspect-square">
+                  <p className="text-muted-foreground animate-pulse">
+                    Generating parameters...
+                  </p>
+                </div>
+              ) : (
+                <SlopImage
+                  prompt={basicExamplePrompt}
+                  variables={{
+                    location: effectiveLocation,
+                    weather: effectiveWeather,
+                    style,
+                    date,
+                  }}
+                  className="w-full h-full object-cover transition-opacity duration-500 aspect-square"
+                />
+              )
             }
             controls={
               <>
